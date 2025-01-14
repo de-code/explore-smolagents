@@ -16,9 +16,22 @@ venv-create:
 dev-install:
 	$(PIP) install --disable-pip-version-check -r requirements.build.txt
 	$(PIP) install --disable-pip-version-check \
-		-r requirements.txt
+		-r requirements.txt \
+		-r requirements.dev.txt
 
 dev-venv: venv-create dev-install
+
+
+dev-flake8:
+	$(PYTHON) -m flake8 explore_smolagents
+
+dev-pylint:
+	$(PYTHON) -m pylint explore_smolagents
+
+dev-mypy:
+	$(PYTHON) -m mypy --check-untyped-defs explore_smolagents
+
+dev-lint: dev-flake8 dev-pylint dev-mypy
 
 
 dev-run-weather:
