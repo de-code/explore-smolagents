@@ -5,6 +5,8 @@ PIP = $(VENV)/bin/pip
 PYTHON = $(VENV)/bin/python
 
 MODEL_ID = ollama_chat/llama3.2
+API_BASE =
+API_KEY =
 
 
 venv-clean:
@@ -38,4 +40,6 @@ dev-lint: dev-flake8 dev-pylint dev-mypy
 
 dev-run:
 	$(PYTHON) -m explore_smolagents \
-		--model-id=$(MODEL_ID)
+		--model-id=$(MODEL_ID) \
+		--api-base=$(API_BASE) \
+		--api-key=$(API_KEY)
