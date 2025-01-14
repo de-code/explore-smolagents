@@ -34,5 +34,5 @@ dev-mypy:
 dev-lint: dev-flake8 dev-pylint dev-mypy
 
 
-dev-run-weather:
-	$(PYTHON) -m explore_smolagents.weather
+dev-run:
+	$(PYTHON) -m explore_smolagents
