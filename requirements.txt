@@ -1,1 +1,2 @@
 smolagents==1.2.2
+litellm==1.58.0
