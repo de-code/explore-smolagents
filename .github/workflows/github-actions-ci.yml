@@ -27,3 +27,6 @@ jobs:
       - name: Install dependencies
         run: |
           make dev-venv SYSTEM_PYTHON=python
+      - name: Lint
+        run: |
+          make dev-lint
