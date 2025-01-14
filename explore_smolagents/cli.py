@@ -22,7 +22,7 @@ def run(model_id: str):
     LOGGER.info('result: %r', agent.run("What's the weather like in Paris?"))
 
 
-def parse_args() -> argparse.ArgumentParser:
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument('--model-id', default='ollama_chat/llama3.2')
     return parser.parse_args()
