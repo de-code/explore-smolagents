@@ -23,7 +23,7 @@ def get_weather(location: str, celsius: Optional[bool] = False) -> str:
 
 def main():
     model = smolagents.LiteLLMModel(
-        model_id="ollama_chat/llama2"
+        model_id="ollama_chat/llama3.2"
     )
     agent = ToolCallingAgent(
         tools=[get_weather],
