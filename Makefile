@@ -19,3 +19,7 @@ dev-install:
 		-r requirements.txt
 
 dev-venv: venv-create dev-install
+
+
+dev-run-weather:
+	$(PYTHON) -m explore_smolagents.weather
