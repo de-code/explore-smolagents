@@ -39,9 +39,22 @@ dev-mypy:
 dev-lint: dev-flake8 dev-pylint dev-mypy
 
 
+dev-start-telemetry-server:
+	$(PYTHON) -m phoenix.server.main serve
+
+
 dev-run:
 	$(PYTHON) -m explore_smolagents \
 		--model-type=$(MODEL_TYPE) \
 		--model-id=$(MODEL_ID) \
 		--api-base=$(API_BASE) \
 		--api-key=$(API_KEY)
+
+
+dev-run-with-telemetry:
+	$(PYTHON) -m explore_smolagents \
+		--model-type=$(MODEL_TYPE) \
+		--model-id=$(MODEL_ID) \
+		--api-base=$(API_BASE) \
+		--api-key=$(API_KEY) \
+		--otlp-endpoint="http://0.0.0.0:6006/v1/traces"
