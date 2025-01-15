@@ -1,6 +1,12 @@
 import argparse
 import logging
 
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+
+from openinference.instrumentation.smolagents import SmolagentsInstrumentor
+
 import litellm
 import smolagents  # type: ignore
 from smolagents.agents import ToolCallingAgent  # type: ignore
@@ -54,12 +60,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--model-id', default='ollama_chat/llama3.2')
     parser.add_argument('--api-base')
     parser.add_argument('--api-key')
+    parser.add_argument('--otlp-endpoint')
     return parser.parse_args()
+
+
+def configure_otlp(otlp_endpoint: str):
+    LOGGER.info('Configuring OTLP: %r', otlp_endpoint)
+    trace_provider = TracerProvider()
+    trace_provider.add_span_processor(SimpleSpanProcessor(OTLPSpanExporter(otlp_endpoint)))
+    SmolagentsInstrumentor().instrument(tracer_provider=trace_provider)
 
 
 def main():
     args = parse_args()
     litellm.set_verbose = True
+    if args.otlp_endpoint:
+        configure_otlp(args.otlp_endpoint)
     run(
         model=get_model(
             model_type=args.model_type,
