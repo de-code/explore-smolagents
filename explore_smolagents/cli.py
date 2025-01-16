@@ -110,7 +110,6 @@ def configure_otlp(otlp_endpoint: str):
 
 def main():
     args = parse_args()
-    litellm.set_verbose = True
     if args.otlp_endpoint:
         configure_otlp(args.otlp_endpoint)
     run(
