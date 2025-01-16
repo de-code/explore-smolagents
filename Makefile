@@ -46,6 +46,7 @@ dev-start-telemetry-server:
 
 
 dev-run:
+	LITELLM_LOG=DEBUG \
 	$(PYTHON) -m explore_smolagents \
 		--model-type=$(MODEL_TYPE) \
 		--model-id=$(MODEL_ID) \
@@ -55,6 +56,7 @@ dev-run:
 
 
 dev-run-with-telemetry:
+	LITELLM_LOG=DEBUG \
 	$(PYTHON) -m explore_smolagents \
 		--model-type=$(MODEL_TYPE) \
 		--model-id=$(MODEL_ID) \

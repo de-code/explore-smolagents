@@ -8,7 +8,6 @@ from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 
 from openinference.instrumentation.smolagents import SmolagentsInstrumentor
 
-import litellm
 import smolagents  # type: ignore
 from smolagents.agents import (  # type: ignore
     ActionStep,
@@ -110,7 +109,6 @@ def configure_otlp(otlp_endpoint: str):
 
 def main():
     args = parse_args()
-    litellm.set_verbose = True
     if args.otlp_endpoint:
         configure_otlp(args.otlp_endpoint)
     run(
