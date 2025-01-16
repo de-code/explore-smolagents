@@ -9,6 +9,8 @@ MODEL_ID = ollama_chat/llama3.2
 API_BASE =
 API_KEY =
 
+ARGS =
+
 
 venv-clean:
 	@if [ -d "$(VENV)" ]; then \
@@ -48,7 +50,8 @@ dev-run:
 		--model-type=$(MODEL_TYPE) \
 		--model-id=$(MODEL_ID) \
 		--api-base=$(API_BASE) \
-		--api-key=$(API_KEY)
+		--api-key=$(API_KEY) \
+		$(ARGS)
 
 
 dev-run-with-telemetry:
@@ -57,4 +60,5 @@ dev-run-with-telemetry:
 		--model-id=$(MODEL_ID) \
 		--api-base=$(API_BASE) \
 		--api-key=$(API_KEY) \
-		--otlp-endpoint="http://0.0.0.0:6006/v1/traces"
+		--otlp-endpoint="http://0.0.0.0:6006/v1/traces" \
+		$(ARGS)

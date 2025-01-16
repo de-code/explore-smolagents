@@ -1,5 +1,6 @@
 import argparse
 import logging
+import traceback
 
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.trace import TracerProvider
@@ -9,7 +10,13 @@ from openinference.instrumentation.smolagents import SmolagentsInstrumentor
 
 import litellm
 import smolagents  # type: ignore
-from smolagents.agents import ToolCallingAgent  # type: ignore
+from smolagents.agents import (  # type: ignore
+    ActionStep,
+    CodeAgent,
+    ManagedAgent,
+    MultiStepAgent,
+    ToolCallingAgent
+)
 
 from explore_smolagents.weather import get_weather
 
@@ -40,14 +47,42 @@ def get_model(
     raise KeyError(f'Unsupported model type: {model_type}')
 
 
-def run(
-    model: smolagents.Model
-):
+def do_step_callback(step_log: ActionStep):
+    LOGGER.info('step_log: %r', step_log)
+    if step_log.error:
+        LOGGER.warning('Caught error: %s', '\n'.join(traceback.format_exception(step_log.error)))
+
+
+def get_agent(
+    model: smolagents.Model,
+    enable_code_execution: bool
+) -> MultiStepAgent:
     agent = ToolCallingAgent(
-        tools=[get_weather],
-        model=model
+        tools=[get_weather, smolagents.DuckDuckGoSearchTool],
+        model=model,
+        step_callbacks=[do_step_callback]
     )
-    LOGGER.info('result: %r', agent.run("What's the weather like in Paris?"))
+    if not enable_code_execution:
+        return agent
+    managed_agent = ManagedAgent(
+        agent=agent,
+        name="managed_agent",
+        description="This is an agent that can do web search."
+    )
+    manager_agent = CodeAgent(
+        tools=[],
+        model=model,
+        managed_agents=[managed_agent],
+        step_callbacks=[do_step_callback]
+    )
+    return manager_agent
+
+
+def run(
+    agent: MultiStepAgent,
+    task_prompt: str
+):
+    LOGGER.info('result: %r', agent.run(task_prompt))
 
 
 def parse_args() -> argparse.Namespace:
@@ -61,6 +96,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--api-base')
     parser.add_argument('--api-key')
     parser.add_argument('--otlp-endpoint')
+    parser.add_argument('--task-prompt', default="What's the weather like in Paris?")
+    parser.add_argument('--enable-code-execution', action='store_true')
     return parser.parse_args()
 
 
@@ -77,12 +114,16 @@ def main():
     if args.otlp_endpoint:
         configure_otlp(args.otlp_endpoint)
     run(
-        model=get_model(
-            model_type=args.model_type,
-            model_id=args.model_id,
-            api_base=args.api_base,
-            api_key=args.api_key
-        )
+        agent=get_agent(
+            model=get_model(
+                model_type=args.model_type,
+                model_id=args.model_id,
+                api_base=args.api_base,
+                api_key=args.api_key
+            ),
+            enable_code_execution=args.enable_code_execution
+        ),
+        task_prompt=args.task_prompt
     )
 
 
