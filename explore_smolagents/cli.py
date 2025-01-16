@@ -8,7 +8,6 @@ from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 
 from openinference.instrumentation.smolagents import SmolagentsInstrumentor
 
-import litellm
 import smolagents  # type: ignore
 from smolagents.agents import (  # type: ignore
     ActionStep,
