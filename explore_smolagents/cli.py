@@ -57,7 +57,7 @@ def get_agent(
     enable_code_execution: bool
 ) -> MultiStepAgent:
     agent = ToolCallingAgent(
-        tools=[get_weather, smolagents.DuckDuckGoSearchTool],
+        tools=[get_weather, smolagents.DuckDuckGoSearchTool()],
         model=model,
         step_callbacks=[do_step_callback]
     )
