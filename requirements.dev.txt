@@ -1,7 +1,7 @@
 arize-phoenix==8.2.1
 flake8==7.1.1
 opentelemetry-exporter-otlp==1.29.0
-opentelemetry-sdk==1.29.0
+opentelemetry-sdk==1.30.0
 openinference-instrumentation-smolagents==0.1.6
 pylint==3.3.3
 mypy==1.14.1
